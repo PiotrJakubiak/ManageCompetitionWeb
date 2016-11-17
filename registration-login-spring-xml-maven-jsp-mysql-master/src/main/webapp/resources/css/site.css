@@ -1,0 +1,70 @@
+header
+{
+    height: 70px;
+    width:100%;
+    position: fixed;
+    top:0px;
+    left:0px;
+    background-color: #35ff2a;
+    z-index: 1;
+}
+.container{
+    margin: 0px auto;
+    padding-top: 70px;
+    min-height: 800px;
+    width: 1020px;
+    background-color: #EEEEEE;
+}
+header h1,
+header nav
+{
+    float:left;
+}
+
+header .container
+{
+
+    padding-top: 0px;
+    background-color: transparent;
+    color: #ffffff;
+    min-height: 10px;
+}
+header .user-info {
+    float:right;
+    position:relative;
+    padding-top: 15px;
+    padding-left: 50px;
+    line-height: 25px;
+    vertical-align: middle;
+}
+header .user-info img
+{
+    width: 40px;
+    height:40px;
+    position: absolute;
+    top:5px;
+    left: 5px;
+}
+header span
+{
+    color: #c80003;
+}
+.user-input {
+    width: 100%;
+    padding: 5px;
+}
+.user-input label{
+    display: block;
+    width: 100%;
+}
+input[type=text],
+input[type=password]{
+    display: inline-block;
+    border: #333333 1px solid;
+    padding: 4px 6px;
+}
+
+.grid
+{
+    float:left;
+}
