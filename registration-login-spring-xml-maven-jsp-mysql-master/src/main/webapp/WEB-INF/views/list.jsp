@@ -28,12 +28,10 @@
                         <th class="th">ID</th>
                         <th class="th">Nazwa</th>
                     </tr>
-                    <c:forEach items="${teamsList}" var="team">
-                        <tr>
-                            <td class="td"><c:out value="${team.id}" /></td>
-                            <td class="td"><c:out value="${team.name}" /></td>
-                        </tr>
-                    </c:forEach>
+
+                    <c:out value="${tournament.id}" /></td>
+                    <c:out value="${tournament.name}" /></td>
+
                 </table>
             </td>
         </tr>

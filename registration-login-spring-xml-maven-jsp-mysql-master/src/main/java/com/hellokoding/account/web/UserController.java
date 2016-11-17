@@ -15,6 +15,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -110,14 +111,22 @@ public class UserController {
     }
 
     @RequestMapping(value = "/tournamentId={id}", method = RequestMethod.GET)
-    public ModelAndView viewFixedDepositDetails(@PathVariable("id") long id) {
+    public ModelAndView viewFixedDepositDetails(@PathVariable("id") long id,RedirectAttributes redir) {
         System.out.println("123");
         Tournament fixedDepositDetails = tournamentService.getTournament(id);
 
         System.out.println(fixedDepositDetails);
         ModelMap modelMap = new ModelMap();
         modelMap.addAttribute(fixedDepositDetails);
+        redir.addFlashAttribute("tournament",fixedDepositDetails);
         return new ModelAndView("list", modelMap);
+    }
+    @RequestMapping(value = "/tournamentId={id}", method = RequestMethod.POST)
+    public String viewFixedDepositDetails(RedirectAttributes redir) {
+
+        System.out.println("lalala");
+        return "redirect:/list";
+
     }
 
     @ExceptionHandler
