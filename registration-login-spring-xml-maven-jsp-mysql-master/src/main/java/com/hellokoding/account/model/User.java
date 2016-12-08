@@ -60,6 +60,7 @@ public class User {
         this.roles = roles;
     }
 
+
     @OneToMany(mappedBy = "user")
     public Set<Team> getTeams() {
         return teams;
@@ -68,4 +69,5 @@ public class User {
     {
         this.teams = teams;
     }
+
 }

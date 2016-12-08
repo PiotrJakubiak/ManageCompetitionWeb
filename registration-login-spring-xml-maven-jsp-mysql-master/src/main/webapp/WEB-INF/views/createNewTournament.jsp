@@ -1,4 +1,5 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: Piotrek
@@ -9,59 +10,136 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Title</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link href="<c:url value="/resources/css/site.css" />" rel="stylesheet">
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
+    <script src="http://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/src/js/bootstrap-datetimepicker.js"></script>
+    <title>Create new tournament</title>
+
 </head>
 <body>
-<form:form action="${contextPath}/createNewTournament" modelAttribute="tournamentForm">
-    <table align="left" style="padding-left: 300px;">
-        <tr>
-            <td
-                    style="font-family: 'arial'; font-size: 16px; font-weight: bold;"
-                    align="left">Stworz nowy turniej</td>
-        </tr>
-        <tr align="left">
-            <td>
-                <table class="border" cellpadding="10">
+<header>
+    <div class="container">
+        <a href="${contextPath}/welcome" id="home_page"><h1>ManageCompetition</h1></a>
+        <nav>
+            asdasdas
+        </nav>
+        <div class="user-info">
+            <c:if test="${pageContext.request.userPrincipal.name != null}">
+                <form id="logoutForm" method="POST" action="${contextPath}/logout">
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                </form>
+
+                <h5> Welcome ${pageContext.request.userPrincipal.name} | <a onclick="document.forms['logoutForm'].submit()">Logout</a></h5>
+
+            </c:if>
+            <img src="http://icons.iconseeker.com/ico/application-interface/user-5.ico" alt="user" />
+
+            </form>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+<div class="grid">
+    <a href="${contextPath}/createNewTournament" class="btn btn-primary">Stworz turniej</a>
+    <a href="${contextPath}/createNewTeam" class="btn btn-primary">Dodaj druzyne</a>
+</div>
+<div class="content">
+<form:form action="${contextPath}/createNewTournament" modelAttribute="tournamentForm" id="commentForm">
+
+    <h2>Tworzenie nowego turnieju</h2>
+                <table class="table table-striped">
                     <tr>
                         <td class="td"><b>Nazwa</b></td>
-                        <td class="td"><input type="text" name="name" value="${requestScope.tournament.name}"/>
+                        <td class="td">
+                            <div class="form-group ${status.error ? 'has-error' : ''}">
+                                <form:input path="name" class="form-control" type="text" name="name" value="${requestScope.tournament.name}"/>
+                                <form:errors path="name" style="color:red"></form:errors>
+                            </div>
+                        </td>
                     </tr>
                     <tr>
-                        <td class="td"><b>Typ turnieju</b></td>
-                        <td class="td"><input type="text" name="typeTournament" value="${requestScope.tournament.typeTournament}" />
+                        <td class="td"><b>Typ rozgrywki</b></td>
+                        <td class="td">
+                            <div class="form-group ${status.error ? 'has-error' : ''}">
+                                <form:radiobutton class="radio-inline" path="typeTournament" value="Liga"/>Liga
+                                <form:radiobutton class="radio-inline" path="typeTournament" value="Play-off"/>Play-off
+                                <form:radiobutton class="radio-inline" path="typeTournament" value="Turniej"/>Grupy + Play-off
+                                <form:errors path="typeTournament" style="color:red"></form:errors>
+                            </div>
+                        </td>
                     </tr>
                     <tr>
                         <td class="td"><b>Kategoria</b></td>
-                        <td class="td"><input type="text" name="categoryOfTournament" value="${requestScope.tournament.categoryOfTournament}" />
+                        <td class="td">
+                            <div class="form-group ${status.error ? 'has-error' : ''}">
+                                <form:select class="form-control" id="selectCategory" path="categoryOfTournament" >
+                                    <form:option value="Junior">Junior</form:option>
+                                    <form:option value="Open">Open</form:option>
+                                </form:select>
+                            </div>
                     </tr>
                     <tr>
                         <td class="td"><b>Liczba zespolow</b></td>
-                        <td class="td"><input type="text" name="maxNumberOfTeam" value="${requestScope.tournament.maxNumberOfTeam}"/>
+                        <td class="td">
+                            <div class="form-group ${status.error ? 'has-error' : ''}">
+                                <form:input class="form-control" path="maxNumberOfTeam" type="text" name="maxNumberOfTeam" value="${requestScope.tournament.maxNumberOfTeam}" />
+                                <form:errors path="maxNumberOfTeam" style="color:red"></form:errors>
+                            </div>
+                        </td>
                     </tr>
                     <tr>
                         <td class="td"><b>Data startu</b></td>
-                        <td class="td"><input type="text" name="dateOfBegining" value="${requestScope.tournament.dateOfBegining}"/>
-                    </tr>
-                    <tr>
-                        <td class="td"><b>Stan</b></td>
-                        <td class="td"><input type="text" name="stateOfTournament" value="${requestScope.tournament.stateOfTournament}"/>
+                        <td class="td">
+                            <div class="form-group ${status.error ? 'has-error' : ''}">
+                            <div class='input-group date' id='datetimepicker4'>
+                                <form:input path="dateOfBegining" type='text' class="form-control" name="dateOfBegining" value="${requestScope.tournament.dateOfBegining}"/>
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span>
+                                </span>
+                            </div>
+                                <form:errors path="dateOfBegining" style="color:red"></form:errors>
+                                </div>
+                        </td>
                     </tr>
                 </table>
             </td>
         </tr>
         <tr align="left">
             <td>
-                <table style="padding-left: 100px;">
+                <table class="table table-striped">
                     <tr align="center">
-                        <td class="td"><input type="submit" value="Zapisz" /> &nbsp;
-                            &nbsp;<a
-                                    href="${pageContext.request.contextPath}/tournament/list"
-                                    style="color: green"><b>Wroc</b></a></td>
+                        <td class="td">
+                            <button class="btn btn-primary" type="submit" >Zapisz</button>
+
+                            <a href="${pageContext.request.contextPath}/welcome" class="btn btn-primary"> Wroc </a>
+                        </td>
                     </tr>
                 </table>
             </td>
         </tr>
-    </table>
 </form:form>
+</div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function() {
+
+            $('#datetimepicker4').datetimepicker({
+                format: 'YYYY/MM/DD'
+            });
+    });
+
+</script>
 </body>
 </html>

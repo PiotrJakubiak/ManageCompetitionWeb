@@ -1,6 +1,7 @@
 package com.hellokoding.account.model;
 
 import javax.persistence.*;
+import java.util.Set;
 
 /**
  * Created by Piotrek on 15-Nov-16.
@@ -11,8 +12,13 @@ public class Player {
 
     private Long id;
     private String name;
+    private String lastName;
     private String position;
-    private String number;
+    private int number;
+    private String birthDay;
+
+    private Set<Event> events;
+    private Team team;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,12 +30,12 @@ public class Player {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public int getNumber() {
+        return number;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNumber(int number) {
+        this.number = number;
     }
 
     public String getPosition() {
@@ -40,11 +46,45 @@ public class Player {
         this.position = position;
     }
 
-    public String getNumber() {
-        return number;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getBirthDay() {
+        return birthDay;
+    }
+
+    public void setBirthDay(String birthDay) {
+        this.birthDay = birthDay;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
+
+    @OneToMany(mappedBy = "player")
+    public Set<Event> getEvents() {
+        return events;
+    }
+
+    public void setEvents(Set<Event> events) {
+        this.events = events;
     }
 }

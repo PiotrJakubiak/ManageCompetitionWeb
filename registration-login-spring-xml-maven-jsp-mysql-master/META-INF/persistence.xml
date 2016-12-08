@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
+<persistence-unit name="persistentUnit">
+    <class>com.hellokoding.account.repository.entities.PlayerEntity</class>
+    <class>com.hellokoding.account.repository.entities.RoleEntity</class>
+    <class>com.hellokoding.account.repository.entities.TeamEntity</class>
+    <class>com.hellokoding.account.repository.entities.TournamentEntity</class>
+    <class>com.hellokoding.account.repository.entities.TournamentTeamEntity</class>
+    <class>com.hellokoding.account.repository.entities.UserEntity</class>
+    <class>com.hellokoding.account.repository.entities.UserRoleEntity</class>
+    <class>com.hellokoding.account.repository.entities.MatchEntity</class>
+    <properties>
+        <property name="hibernate.connection.url"
+                  value="jdbc:mysql://localhost:3306/accounts?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull"/>
+        <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
+        <property name="hibernate.connection.username" value="root"/>
+        <property name="hibernate.connection.password" value="trzaslo"/>
+    </properties>
+</persistence-unit>
+</persistence>

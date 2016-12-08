@@ -1,12 +1,10 @@
 package com.hellokoding.account.web;
 
-import com.hellokoding.account.model.Team;
-import com.hellokoding.account.model.Tournament;
-import com.hellokoding.account.model.User;
-import com.hellokoding.account.service.SecurityService;
-import com.hellokoding.account.service.TeamService;
-import com.hellokoding.account.service.TournamentService;
-import com.hellokoding.account.service.UserService;
+import com.hellokoding.account.DTO.TournamentTeamDTO;
+import com.hellokoding.account.model.*;
+import com.hellokoding.account.service.*;
+import com.hellokoding.account.validator.SelectTeamValidator;
+import com.hellokoding.account.validator.TournamentValidator;
 import com.hellokoding.account.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 
 
 @Controller
@@ -34,7 +33,24 @@ public class UserController {
     private UserValidator userValidator;
 
     @Autowired
+    private TournamentValidator tournamentValidator;
+
+    @Autowired
     private TournamentService tournamentService;
+
+    @Autowired
+    private PlayerService playerService;
+
+    @Autowired
+    private TournamentTeamService tournamentTeamService;
+
+    @Autowired
+    private SelectTeamValidator selectTeamValidator;
+
+    @Autowired
+    private GameService gameService;
+
+
 
         @RequestMapping(value = "/registration", method = RequestMethod.GET)
         public String registration(Model model) {
@@ -66,7 +82,9 @@ public class UserController {
         if (logout != null)
             model.addAttribute("message", "You have been logged out successfully.");
         Iterable<Team> teamList = teamService.findAllTeams();
+        List<Tournament> list = tournamentService.findAllTournaments();
         Iterable<Tournament> tournamentsList = tournamentService.findAllTournaments();
+
         model.addAttribute("teamsList",teamList);
         model.addAttribute("tournamentsList",tournamentsList);
         return "login";
@@ -75,30 +93,30 @@ public class UserController {
 
     @RequestMapping(value = {"/", "/welcome"}, method = RequestMethod.GET)
     public String welcome(Model model) {
-        teamService.findAllTeams();
+        Iterable<Tournament> tournamentsList = tournamentService.findAllTournaments();
+        Iterable<Team> teamList = teamService.findAllTeams();
+        for(Tournament tournament : tournamentsList) {
+            tournamentService.getTournament(tournament.getId()).setStateOfTournament("In progress");
+        }
+        model.addAttribute("tournamentsList", tournamentsList);
+        model.addAttribute("teamsList",teamList);
+        return "welcome";
+    }
+    @RequestMapping(value = {"/", "/welcome"}, method = RequestMethod.POST)
+    public String welcome() {
+
+        Iterable<Tournament> tournamentsList = tournamentService.findAllTournaments();
+
+        for(Tournament tournament : tournamentsList) {
+            tournamentService.getTournament(tournament.getId()).setStateOfTournament("In progress");
+        }
+
         return "welcome";
     }
 
-
-    @RequestMapping(value = "/createNewTeam", method = RequestMethod.GET)
-    public String createNewTeam(Model model) {
-        Team team = new Team();
-        model.addAttribute("teamForm", team);
-        return "createNewTeam";
-    }
-    @RequestMapping(value = "/createNewTeam", method = RequestMethod.POST)
-    public String createNewTeam(@ModelAttribute("teamForm") Team teamForm, BindingResult bindingResult, Model model) {
-
-        teamForm.setUser(userService.findByUsername(securityService.findLoggedInUsername()));
-        System.out.println("Z CONTROLLERA " + teamForm.getName()+ teamForm.getUser());
-        teamService.save(teamForm);
-
-
-
-        return "redirect:/welcome";
-    }
     @RequestMapping(value = "/createNewTournament", method = RequestMethod.GET)
     public String createNewTournament(Model model) {
+
         Tournament tournament = new Tournament();
 
         model.addAttribute("tournamentForm", tournament);
@@ -106,33 +124,154 @@ public class UserController {
     }
     @RequestMapping(value = "/createNewTournament", method = RequestMethod.POST)
     public String createNewTournament(@ModelAttribute("tournamentForm") Tournament tournamentForm, BindingResult bindingResult, Model model) {
+        tournamentForm.setStateOfTournament("Oczekuje");
+        tournamentForm.setUser(userService.findByUsername(securityService.findLoggedInUsername()));
+        tournamentValidator.validate(tournamentForm, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            return "createNewTournament";
+        }
+
         tournamentService.save(tournamentForm);
         return "redirect:/welcome";
     }
 
+    @RequestMapping(value = "/viewTournament", method = RequestMethod.GET)
+    public String viewTournament(Model model) {
+        model.addAttribute("tournamentTeamDTO", new TournamentTeamDTO());
+
+        return "viewTournament";
+    }
+
+    @RequestMapping(value = "/createNewPlayer", method = RequestMethod.GET)
+    public String createNewPlayer( Model model) {
+
+        model.addAttribute("tournamentTeamDTO", new TournamentTeamDTO());
+        return "createNewPlayer";
+    }
+
+    @RequestMapping(value = "/createNewPlayer", method = RequestMethod.POST)
+    public String createNewPlayer(@ModelAttribute("tournamentTeamDTO") TournamentTeamDTO teamTournamentDTO , BindingResult bindingResult, Model model) {
+        long id = Long.parseLong(teamTournamentDTO.getTournament());
+
+        selectTeamValidator.validate(teamTournamentDTO,bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            return "viewTournament";
+        }
+
+        /*
+        List<TournamentTeam> list2 = tournamentTeamService.findByTournament(tournamentService.getTournament(id));
+        List<Team> listTeam = new ArrayList<>();
+
+        for(TournamentTeam tournamentTeam : list2){
+            listTeam.add(tournamentTeam.getTeam());
+
+        }
+       for(Team team : listTeam){
+           if(team.getName().equals(teamTournamentDTO.getTeam())) {
+                return "redirect:welcome";
+            }
+        }
+        */
+        tournamentTeamService.save(teamService.findByName(teamTournamentDTO.getTeam()),tournamentService.getTournament(id));
+        return "redirect:welcome";
+    }
     @RequestMapping(value = "/tournamentId={id}", method = RequestMethod.GET)
     public ModelAndView viewFixedDepositDetails(@PathVariable("id") long id,RedirectAttributes redir) {
-        System.out.println("123");
-        Tournament fixedDepositDetails = tournamentService.getTournament(id);
 
-        System.out.println(fixedDepositDetails);
+        Tournament tournament = tournamentService.getTournament(id);
+        Iterable<Team> list; // = teamService.findByUser(userService.findByUsername(securityService.findLoggedInUsername())); // druzyny zalogowanego usera
+        List<TournamentTeam> list2 = tournamentTeamService.findByTournament(tournament);
+        List<Team> listTeam = new ArrayList<>();
+
+       for(TournamentTeam tournamentTeam : list2){
+          listTeam.add(tournamentTeam.getTeam());
+
+        }
+        list = listTeam;
         ModelMap modelMap = new ModelMap();
-        modelMap.addAttribute(fixedDepositDetails);
-        redir.addFlashAttribute("tournament",fixedDepositDetails);
-        return new ModelAndView("list", modelMap);
+        modelMap.addAttribute(tournament);
+        modelMap.addAttribute("teamList",list);
+
+        redir.addFlashAttribute("tournament",tournament);
+        redir.addFlashAttribute("teamList",list);
+        //tournamentService.setFixture(listTeam,tournament);
+        //Iterable<Game> gameList = gameService.findAllByTournament(tournament);
+
+
+        //modelMap.addAttribute("gameList",gameList);
+
+        return new ModelAndView("viewChoosenTournament", modelMap);
     }
-    @RequestMapping(value = "/tournamentId={id}", method = RequestMethod.POST)
-    public String viewFixedDepositDetails(RedirectAttributes redir) {
 
-        System.out.println("lalala");
-        return "redirect:/list";
+    @RequestMapping(value = "/viewTournamentId={id}", method = RequestMethod.GET)
+    public String joinTournament(@PathVariable("id") long id,RedirectAttributes redir) {
 
+        if(tournamentService.getTournament(id).getCurrentNumberOfTeam() < tournamentService.getTournament(id).getMaxNumberOfTeam() ) {
+            Tournament tournament = tournamentService.getTournament(id);
+            List<Team> list = teamService.findByUserAndCategory(userService.findByUsername(securityService.findLoggedInUsername()),tournament.getCategoryOfTournament());
+            HashSet<String> userTeams = new LinkedHashSet<String>();
+            for (Team team : list) {
+                userTeams.add(team.getName());
+            }
+            Iterable<Team> teamList = teamService.findByUser(userService.findByUsername(securityService.findLoggedInUsername()));
+
+            redir.addFlashAttribute("tournament", tournament);
+            redir.addFlashAttribute("userTeams", userTeams);
+            redir.addFlashAttribute("teamsList", list);
+            return "redirect:viewTournament";
+        } else {
+
+            return "redirect:welcome";
+
+        }
+    }
+
+    @RequestMapping(value="/createNewTeams", method = RequestMethod.GET)
+    public void add(HttpServletRequest request)
+            throws Exception {
+        request.getSession().getAttribute("team");
+        System.out.println("czy sie udalo?"+ request.getSession().getAttribute("team"));
+        Team team = (Team) request.getSession().getAttribute("team");
+        Player player = new Player();
+
+        String name = request.getParameter("firstName");
+        String lastName = request.getParameter("lastName");
+        String email = request.getParameter("email");
+
+        player.setName(name);
+        player.setLastName(lastName);
+        player.setTeam(team);
+        System.out.println(player.getName()+ " "+player.getLastName());
+        playerService.save(player,team);
+        //return employee;
     }
 
     @ExceptionHandler
     public String handleException(Exception ex) {
         return "error";
     }
+
+
+    @RequestMapping(value = "/teamId={id}", method = RequestMethod.GET)
+    public String viewTeam(@PathVariable("id") long id, RedirectAttributes redir) {
+
+        Team team = teamService.findById(id);
+        Iterable<Player> listPlayer = playerService.findByTeam(team);
+        System.out.println("aaaaaaaaaaaaaaaaa"+team.getName());
+        redir.addFlashAttribute("team",team);
+        redir.addFlashAttribute("listPlayer",listPlayer);
+        return "redirect:viewTeam";
+    }
+    @RequestMapping(value = "/viewTeam", method = RequestMethod.GET)
+    public String viewChoosenTeam(RedirectAttributes redir) {
+
+        System.out.println("pobieram " + redir.getFlashAttributes());
+
+        return "viewTeam";
+    }
+
 
 
 }
