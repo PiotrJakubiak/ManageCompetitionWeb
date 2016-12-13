@@ -50,6 +50,9 @@ public class UserController {
     @Autowired
     private GameService gameService;
 
+    @Autowired
+    private EmailAPI emailAPI;
+
 
 
         @RequestMapping(value = "/registration", method = RequestMethod.GET)
@@ -181,7 +184,7 @@ public class UserController {
     public ModelAndView viewFixedDepositDetails(@PathVariable("id") long id,RedirectAttributes redir) {
 
         Tournament tournament = tournamentService.getTournament(id);
-        Iterable<Team> list; // = teamService.findByUser(userService.findByUsername(securityService.findLoggedInUsername())); // druzyny zalogowanego usera
+        Iterable<Team> list;
         List<TournamentTeam> list2 = tournamentTeamService.findByTournament(tournament);
         List<Team> listTeam = new ArrayList<>();
 
@@ -196,11 +199,61 @@ public class UserController {
 
         redir.addFlashAttribute("tournament",tournament);
         redir.addFlashAttribute("teamList",list);
-        //tournamentService.setFixture(listTeam,tournament);
-        //Iterable<Game> gameList = gameService.findAllByTournament(tournament);
 
 
-        //modelMap.addAttribute("gameList",gameList);
+        Iterable<Game> gameList = gameService.findNextGame(tournament,new Date());
+        Iterable<Game> lastGamesList = gameService.findLastGames(tournament,new Date());
+        List<TeamStats> tournamentTable = new ArrayList<TeamStats>();
+        for(Team team : listTeam) {
+            System.out.println(team.getName());
+            List<Game> allGamesByTeam = gameService.findAllByTeam(tournament,team);
+            System.out.println("llllll "+allGamesByTeam.size());
+            int match=0,win=0,rem=0,por=0,punkty=0;
+            for(Game game : allGamesByTeam) {
+                match++;
+                if(team.getId() == game.getHome().getId()) {
+                    System.out.println("weszlo0");
+                    if(game.getGoals_home() > game.getGoals_away()) {
+                        System.out.println("weszlo1");
+                        win++;
+                    } else if(game.getGoals_home() == game.getGoals_away()) {
+                        System.out.println("weszlo2");
+                        rem++;
+                    } else if(game.getGoals_home() < game.getGoals_away()) {
+                        System.out.println("weszlo3");
+                        por++;
+                    }
+                } else {
+                    if(game.getGoals_home() > game.getGoals_away()) {
+                        por++;
+                    } else if(game.getGoals_home() == game.getGoals_away()) {
+                        rem++;
+                    } else if(game.getGoals_home() < game.getGoals_away()){
+                        win++;
+                    }
+                }
+            }
+            TeamStats teamStats = new TeamStats();
+            teamStats.setName(team.getName());
+            teamStats.setCountMatch(match);
+            teamStats.setCountWin(win);
+            teamStats.setCountDraw(rem);
+            teamStats.setCountFail(por);
+            punkty=3*win+rem;
+            teamStats.setCountPoints(punkty);
+            tournamentTable.add(teamStats);
+
+        }
+        //emailAPI.crunchifyReadyToSendEmail("piotrekjakubiak1994@gmail.com","alfredoooooo@gmail.com","test","akuku!");
+        Collections.sort(tournamentTable, new Comparator<TeamStats>() {
+            @Override public int compare(TeamStats p1, TeamStats p2) {
+                return p2.getCountPoints() - p1.getCountPoints(); // Ascending
+            }
+
+        });
+        modelMap.addAttribute("tournamentTable",tournamentTable);
+        modelMap.addAttribute("gameList",gameList);
+        modelMap.addAttribute("lastGameList",lastGamesList);
 
         return new ModelAndView("viewChoosenTournament", modelMap);
     }

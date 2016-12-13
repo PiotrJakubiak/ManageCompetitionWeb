@@ -28,6 +28,7 @@ CREATE TABLE `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
@@ -73,7 +74,9 @@ CREATE TABLE `tournament` (
   `categoryoftournament` varchar(255) DEFAULT NULL,
   `stateoftournament` varchar(255) DEFAULT NULL,
   `typetournament` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `user_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_tournament_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 
 
@@ -104,7 +107,7 @@ CREATE TABLE `tournament_team` (
 DROP TABLE IF EXISTS `game`;
 CREATE TABLE `game` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `kolejka` int(11) DEFAULT NULL,
+  `round` int(11) DEFAULT NULL,
   `date` date DEFAULT NULL,
   `home` int(11) NOT NULL,
   `away` int(11) NOT NULL,

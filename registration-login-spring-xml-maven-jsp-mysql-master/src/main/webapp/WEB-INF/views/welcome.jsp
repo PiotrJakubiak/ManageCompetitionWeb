@@ -13,6 +13,9 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta name="_csrf" content="${_csrf.token}"/>
+    <!-- default header name is X-CSRF-TOKEN -->
+    <meta name="_csrf_header" content="${_csrf.headerName}"/>
     <link href="<c:url value="/resources/css/bootstrap.min.css"/>" rel="stylesheet" >
     <link href="<c:url value="/resources/css/site.css" />" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
@@ -24,6 +27,7 @@
 
             $('.disabled_button').attr("disabled", true);
             $('[data-toggle="tooltip"]').tooltip();
+
         });
         $(document).ready(function() {
             $('.disabled_button').click(function(e){
@@ -31,7 +35,26 @@
                 e.preventDefault();
             });
         });
-
+        $(function () {
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            $(document).ajaxSend(function(e, xhr, options) {
+                xhr.setRequestHeader(header, token);
+            });
+        });
+        function madeAjaxCall(){
+            $.ajax({
+                type: "post",
+                url: "/employee/lol",
+                cache: false,
+                data:'firstName=' + $("#firstName").val() + "&lastName=" + $("#lastName").val() + "&email=" + $("#email").val(),
+                success: function(response){
+                },
+                error: function(){
+                    alert('Error while request..');
+                }
+            });
+        }
     </script>
     <title>Welcome</title>
 
@@ -95,12 +118,12 @@
 
                             <c:choose>
                                 <c:when test="${tournament.currentNumberOfTeam eq tournament.maxNumberOfTeam}">
-                                    <a href="${contextPath}/viewTournamentId=${tournament.id}"
-                                       class="btn btn-primary disabled_button" data-toggle="tooltip" title="Tournament in progress" >Dolacz</a>
+                                 <!--   <a href="${contextPath}/viewTournamentId=${tournament.id}"
+                                       class="btn btn-primary disabled_button" data-toggle="tooltip" title="Tournament in progress" >Dolacz</a> -->
                                 </c:when>
                                 <c:otherwise>
-                                    <a href="${contextPath}/viewTournamentId=${tournament.id}"
-                                    class="btn btn-primary" >Dolacz</a>
+                                        <a href="${contextPath}/viewTournamentId=${tournament.id}"
+                                           class="btn btn-primary" >Dolacz</a>
                                 </c:otherwise>
                             </c:choose>
                         </td>
@@ -111,7 +134,25 @@
         </table>
 
     </div>
-
+    <form name="employeeForm" method="post">
+        <table cellpadding="0" cellspacing="0" border="1" class="GridOne">
+            <tr>
+                <td>First Name</td>
+                <td><input type="text" name="firstName" id="firstName" value=""></td>
+            </tr>
+            <tr>
+                <td>Last Name</td>
+                <td><input type="text" name="lastName" id="lastName" value=""></td>
+            </tr>
+            <tr>
+                <td>Email</td>
+                <td><input type="text" name="email" id="email" value=""></td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center"><input type="button" value="Ajax Submit" onclick="madeAjaxCall();"></td>
+            </tr>
+        </table>
+    </form>
 
 <!--
     <c:if test="${pageContext.request.userPrincipal.name != null}">
@@ -122,10 +163,6 @@
         <h2>Welcome ${pageContext.request.userPrincipal.name} | <a onclick="document.forms['logoutForm'].submit()">Logout</a></h2>
 
     </c:if>
-    <a href="${contextPath}/createNewTeam">Create a team</a></h4>
-    <br />
-
-    Lista zespolow:
     -->
 </div>
 

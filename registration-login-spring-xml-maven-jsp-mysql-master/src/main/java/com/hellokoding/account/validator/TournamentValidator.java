@@ -33,9 +33,9 @@ public class TournamentValidator implements Validator {
 
         Tournament tournament = (Tournament)o;
 
-        if(tournamentService.findByName(tournament.getName()).size() != 0){
-            errors.rejectValue("name","T.tournamentForm");
-        }
+      //  if(tournamentService.findByName(tournament.getName()).size() != 0){
+        //    errors.rejectValue("name","T.tournamentForm");
+       // }
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors,"name","NotEmpty");
 

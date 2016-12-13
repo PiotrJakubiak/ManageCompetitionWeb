@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,12 +38,6 @@ public class TournamentServiceImpl implements TournamentService {
 
     @Override
     public void save(Tournament tournament) {
-
-       // List<Tournament> list = findByName();
-        //List<Team> list2=teamRepository.findByUser(userService.findByUsername(securityService.findLoggedInUsername()));
-        //System.out.println(list2.size());
-        //tournament.setTeams(new LinkedList<>((teamRepository.findByTeam())));
-       // System.out.println();
         tournamentRepository.save(tournament);
     }
 
@@ -51,7 +48,7 @@ public class TournamentServiceImpl implements TournamentService {
     }
 
     @Override
-    public List<Tournament> findByName(String name) {
+    public Tournament findByName(String name) {
         return tournamentRepository.findByName(name);
     }
 
@@ -69,7 +66,6 @@ public class TournamentServiceImpl implements TournamentService {
     @Override
     @Transactional
     public void update(Tournament tournament) {
-        System.out.println("dokonuje update");
         tournamentRepository.save(tournament);
     }
 
@@ -89,7 +85,7 @@ public class TournamentServiceImpl implements TournamentService {
     }
 
     @Override
-    public void setFixture(List<Team> teamList,Tournament tournament) {
+    public void setFixture(List<Team> teamList,Tournament tournament,int frequency) {
 
         int numberOfRound = teamList.size()-1;
         int half = teamList.size()/2;
@@ -100,27 +96,41 @@ public class TournamentServiceImpl implements TournamentService {
         for(int day=0;day<numberOfRound;day++)
         {
             Game game = new Game();
-            System.out.println("Kolejka "+day+1);
-            game.setKolejka(day+1);
+
+            if(day==0){
+                game.setDate(tournament.getDateOfBegining());
+            } else {
+                game.setDate(addDays(tournament.getDateOfBegining(),(day)*frequency));
+            }
+            game.setRound(day+1);
             int teamIdx = day % teamSize;
-            System.out.println("{0} vs {1} " + stala.getName() + teamList.get(teamIdx).getName() );
+
             game.setHome(stala);
             game.setAway(teamList.get(teamIdx));
             game.setTournament(tournament);
+            game.setGoals_home(-1);
+            game.setGoals_away(-1);
             gameRepository.save(game);
 
             for(int idx=1;idx<half;idx++){
 
-                game.setKolejka(day+1);
+                game.setRound(day+1);
                 int firstTeam = (day+idx) % teamSize;
                 int secondTeam = (day + teamSize -idx) % teamSize;
-                System.out.println("{0} vs {1} " + teamList.get(firstTeam).getName() + teamList.get(secondTeam).getName());
                 game.setHome(teamList.get(firstTeam));
                 game.setAway(teamList.get(secondTeam));
+                game.setGoals_away(-1);
+                game.setGoals_home(-1);
                 game.setTournament(tournament);
                 gameRepository.save(game);
             }
         }
 
+    }
+    private static Date addDays(Date date,int days) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime( date );
+        cal.add(Calendar.DATE,days);
+        return cal.getTime();
     }
 }

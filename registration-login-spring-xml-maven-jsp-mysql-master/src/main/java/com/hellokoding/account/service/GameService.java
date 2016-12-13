@@ -1,8 +1,10 @@
 package com.hellokoding.account.service;
 
 import com.hellokoding.account.model.Game;
+import com.hellokoding.account.model.Team;
 import com.hellokoding.account.model.Tournament;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -11,4 +13,8 @@ import java.util.List;
 public interface GameService {
     void save(Game game);
     List<Game> findAllByTournament(Tournament tournament);
+    Game findById(long id);
+    List<Game> findNextGame(Tournament tournament, Date date);
+    List<Game> findLastGames(Tournament tournament, Date date);
+    List<Game> findAllByTeam(Tournament tournament,Team team);
 }

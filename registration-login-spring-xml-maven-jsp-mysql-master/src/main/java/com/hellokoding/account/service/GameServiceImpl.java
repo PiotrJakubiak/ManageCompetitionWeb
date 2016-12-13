@@ -1,11 +1,20 @@
 package com.hellokoding.account.service;
 
 import com.hellokoding.account.model.Game;
+import com.hellokoding.account.model.Team;
 import com.hellokoding.account.model.Tournament;
 import com.hellokoding.account.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,5 +34,27 @@ public class GameServiceImpl implements GameService {
     @Override
     public List<Game> findAllByTournament(Tournament tournament) {
         return gameRepository.findAllByTournament(tournament);
+    }
+
+    @Override
+    public Game findById(long id) {
+        return gameRepository.findOne(id);
+    }
+
+    @Override
+    public List<Game> findNextGame(Tournament tournament, Date date) {
+
+        return gameRepository.findNextGame(tournament, date, new PageRequest(0, tournament.getMaxNumberOfTeam()/2) {
+        });
+    }
+
+    @Override
+    public List<Game> findLastGames(Tournament tournament, Date date) {
+        return gameRepository.findLastGames(tournament,date,new PageRequest(0,tournament.getMaxNumberOfTeam()/2));
+    }
+
+    @Override
+    public List<Game> findAllByTeam(Tournament tournament,Team team) {
+        return gameRepository.findAllByTeam(tournament,team);
     }
 }

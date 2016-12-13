@@ -18,6 +18,7 @@ public class EmailAPI {
 
     public void crunchifyReadyToSendEmail(String toAddress, String fromAddress, String subject, String msgBody) {
 
+        System.out.println("wysylam");
         SimpleMailMessage crunchifyMsg = new SimpleMailMessage();
         crunchifyMsg.setFrom(fromAddress);
         crunchifyMsg.setTo(toAddress);

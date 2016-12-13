@@ -12,7 +12,7 @@ import java.util.Set;
 public class Game {
 
     private long id;
-    private int kolejka;
+    private int round;
     private Team home;
     private Team away;
     private Tournament tournament;
@@ -34,12 +34,12 @@ public class Game {
         this.id = id;
     }
 
-    public int getKolejka() {
-        return kolejka;
+    public int getRound() {
+        return round;
     }
 
-    public void setKolejka(int kolejka) {
-        this.kolejka = kolejka;
+    public void setRound(int round) {
+        this.round = round;
     }
 
     @ManyToOne

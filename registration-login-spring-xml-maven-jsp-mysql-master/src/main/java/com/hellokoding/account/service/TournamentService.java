@@ -14,12 +14,12 @@ public interface TournamentService {
     void save(Tournament tournament);
     void update(Tournament tournament);
     List<Tournament> findAllTournaments();
-    List<Tournament> findByName(String name);
+    Tournament findByName(String name);
     Tournament getTournament(long tournamentId);
 
     void saveTeamToTournament(List<Team> team,Tournament tournament);
   // List<Tournament> findByTeam(String name);
   void updateTournament(int currentNumberOfTeam,long id);
     void updateTournamentState(String stateOfTournament,long id);
-    void setFixture(List<Team> teamList,Tournament tournament);
+    void setFixture(List<Team> teamList,Tournament tournament,int frequency);
 }
