@@ -1,9 +1,14 @@
 package com.hellokoding.account.validator;
 
 
+import com.hellokoding.account.DTO.TournamentDTO;
 import com.hellokoding.account.model.Tournament;
+import com.hellokoding.account.model.User;
+import com.hellokoding.account.service.SecurityService;
 import com.hellokoding.account.service.TournamentService;
+import com.hellokoding.account.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.auditing.DateTimeProvider;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -23,15 +28,21 @@ public class TournamentValidator implements Validator {
     @Autowired
     private TournamentService tournamentService;
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private SecurityService securityService;
+
     @Override
     public boolean supports(Class<?> aClass) {
-        return Tournament.class.equals(aClass);
+        return TournamentDTO.class.equals(aClass);
     }
 
     @Override
     public void validate(Object o, Errors errors) {
 
-        Tournament tournament = (Tournament)o;
+        TournamentDTO tournament = (TournamentDTO)o;
 
       //  if(tournamentService.findByName(tournament.getName()).size() != 0){
         //    errors.rejectValue("name","T.tournamentForm");
@@ -49,7 +60,12 @@ public class TournamentValidator implements Validator {
 
         ValidationUtils.rejectIfEmpty(errors,"dateOfBegining","NotEmpty");
 
-       // LocalDate timeNow = LocalDate.now();
+        User user =userService.findByUsername(securityService.findLoggedInUsername());
+        if(!user.getBirthDay().equals(new Date("2000/02/02"))) {
+            errors.rejectValue("isOlder18","Not18Year");
+            System.out.println("gowno");
+        }
+
        // String tmpDate = tournament.getDateOfBegining().replaceAll("/","-");
 
        // if(!tmpDate.isEmpty()) {
@@ -62,4 +78,5 @@ public class TournamentValidator implements Validator {
         ValidationUtils.rejectIfEmpty(errors,"typeTournament","NotEmpty");
 
     }
+
 }

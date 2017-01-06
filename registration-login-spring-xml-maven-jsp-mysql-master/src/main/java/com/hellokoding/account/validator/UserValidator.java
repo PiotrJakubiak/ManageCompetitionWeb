@@ -13,6 +13,8 @@ public class UserValidator implements Validator {
     @Autowired
     private UserService userService;
 
+    private static String emailPattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
+
     @Override
     public boolean supports(Class<?> aClass) {
         return User.class.equals(aClass);
@@ -39,5 +41,21 @@ public class UserValidator implements Validator {
         if (!user.getPasswordConfirm().equals(user.getPassword())) {
             errors.rejectValue("passwordConfirm", "Diff.userForm.passwordConfirm");
         }
+
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "NotEmpty");
+        if(!isValidEmailAddress(user.getEmail())) {
+            errors.rejectValue("emailContact","Email.teamForm.emailContact");
+        }
+        if (userService.findByEmail(user.getEmail()) != null) {
+            errors.rejectValue("email", "Duplicate.userForm.email");
+        }
+        ValidationUtils.rejectIfEmpty(errors,"birthDay","NotEmpty");
     }
+
+    public boolean isValidEmailAddress(String email) {
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile(emailPattern);
+        java.util.regex.Matcher m = p.matcher(email);
+        return m.matches();
+    }
+
 }

@@ -20,16 +20,19 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
-    <link href="<c:url value="/resources/css/bootstrap.min.css"/>" rel="stylesheet" >
-    <link href="<c:url value="/resources/css/site.css" />" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link href="<c:url value="/resources/css/style.css" />" rel="stylesheet">
+    <meta name="_csrf" content="${_csrf.token}"/>
+    <!-- default header name is X-CSRF-TOKEN -->
+    <meta name="_csrf_header" content="${_csrf.headerName}"/>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+
     <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
     <script src="http://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/src/js/bootstrap-datetimepicker.js"></script>
-    <title>Welcome</title>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script type="text/javascript" src="http://www.technicalkeeda.com/js/javascripts/plugin/json2.js"></script>
-    <script src="/resources/demos/external/jquery-mousewheel/jquery.mousewheel.js"></script>
+
     <style>
         label, input { display:block; }
         input.text { margin-bottom:12px; width:95%; padding: .4em; }
@@ -63,7 +66,9 @@
                         frequency : $("#frequency").val()
                       },
                 success: function (response) {
+                    $("#generate-schedule").hide();
                     $("#generate-schedule").prop("disabled",true);
+
                 },
                 error: function () {
                     alert('Error while request..');
@@ -91,7 +96,7 @@
         $( function() {
            var dialog, form,
            id = $('#id').val(),
-           tmpId
+           tmpId;
 
 
             function addUser() {
@@ -156,10 +161,42 @@
 
             });
 
-
-
-
         });
+
+        $( function() {
+
+            var player = $("#player");
+
+            function addEvent() {
+
+                $( "#playerEvent" ).append("<tr><td>"+player.val()+"</td></tr>");
+
+                };
+
+
+
+            dialog = $( "#eventDialog" ).dialog({
+                autoOpen: false,
+                height: 300,
+                width: 350,
+                modal: true,
+                buttons: {
+                    Cancel: function() {
+                        addEvent();
+                        dialog.dialog( "close" );
+                    }
+                },
+                close: function() {
+                    //form[ 0 ].reset();
+                    // allFields.removeClass( "ui-state-error" );
+                }
+            });
+
+            $( "#addEvent" ).button().on( "click", function() {
+                dialog.dialog( "open" );
+            });
+        });
+
         $( function() {
             $( "#spinner1" ).spinner({
                 spin: function( event, ui ) {
@@ -182,38 +219,20 @@
 
 </head>
 <body>
-<header>
-    <div class="container">
-        <a href="${contextPath}/welcome" id="home_page"><h1>ManageCompetition</h1></a>
-        <nav>
-            asdasdas
-        </nav>
-        <div class="user-info">
-            <c:if test="${pageContext.request.userPrincipal.name != null}">
-                <form id="logoutForm" method="POST" action="${contextPath}/logout">
-                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                </form>
-
-                <h5> Welcome ${pageContext.request.userPrincipal.name} | <a onclick="document.forms['logoutForm'].submit()">Logout</a></h5>
-
-            </c:if>
-            <img src="http://icons.iconseeker.com/ico/application-interface/user-5.ico" alt="user" />
-
-            </form>
-        </div>
-    </div>
-</header>
+<jsp:include page="header.jsp"/>
 <div class="container">
+    <div class="row">
+        <div class="nadawca col-lg-6  col-md-6 col-sm-6">
 
-    <div class="grid">
-        <a href="${contextPath}/createNewTournament" class="btn btn-primary">Stworz turniej</a>
-        <a href="${contextPath}/createNewTeam" class="btn btn-primary">Dodaj druzyne</a>
-    </div>
-
-        <div class="content">
-            <div class="panel panel-default">
-                <div class="panel-heading">Widok turnieju:</div>
-                <div class="panel-body">
+            <div class="grid">
+                <a href="${contextPath}/createNewTournament" class="btn btn-primary">Stworz turniej</a>
+                <a href="${contextPath}/createNewTeam" class="btn btn-primary">Dodaj druzyne</a>
+                <a href="${contextPath}/welcome" class="btn btn-primary">Wroc</a>
+            </div>
+            <div>
+                <h2>Dane turnieju:</h2>
+            </div>
+            <div>
                     <div>
                         <label> Nazwa: <c:out value="${tournament.name}" /></label>
                     </div>
@@ -233,174 +252,191 @@
                         <a href="${contextPath}/schedule/tournamentId=${tournament.id}"
                            class="btn btn-primary">Pokaz terminarz</a>
                     </div>
-
-                </div>
             </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">Zespoly:</div>
-                <div class="panel-body">
-                    <table class="table table-striped table-hover">
-                        <thead class="thead-inverse">
+        </div>
+        <div class="nadawca col-lg-6  col-md-6 col-sm-6">
+            <div>
+                <h2>Zespoły:</h2>
+            </div>
+            <table class="table  table-hover">
+                <thead>
 
-                        <th>Nazwa</th>
-                        </thead>
-                    <tbody>
-                    <c:forEach items="${teamList}" var="team">
-                        <tr>
+                <th>Nazwa</th>
+                </thead>
+                <tbody>
+                <c:forEach items="${teamList}" var="team">
+                    <tr>
                         <td>
                             <c:out value="${team.name}" />
+                        </td>
+                        <td>
+                            <a href="${contextPath}/teamId=${team.id}"
+                               class="btn btn-primary">Widok</a>
+                            <a href="${contextPath}/editTeamId=${team.id}"
+                               class="btn btn-primary">Edycja</a>
+                            <a href="${contextPath}/sendEmailId=${team.id}"
+                               class="btn btn-primary">Wyslij wiadomosc</a>
+                        </td>
+                    </tr>
+                </c:forEach>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="nadawca col-lg-6  col-md-6 col-sm-6">
+            <div>
+                <h2>Ostatnie spotkania:</h2>
+            </div>
+            <div>
+                <table class="table table-striped table-hover">
+                    <thead class="thead-inverse">
+                    <th>Data</th>
+                    <th>Round</th>
+                    <th>Dom</th>
+                    <th>Wyjazd</th>
+                    <th>Wynik</th>
+                    </thead>
+                    <tbody>
+                    <c:forEach items="${lastGameList}" var="game">
+                        <tr>
+                            <td>
+                                <fmt:formatDate value="${game.date}" pattern="yyyy-MM-dd" />
                             </td>
                             <td>
-                                <a href="${contextPath}/teamId=${team.id}"
-                                   class="btn btn-primary">Widok</a>
-                                <a href="${contextPath}/editTeamId=${team.id}"
-                                   class="btn btn-primary">Edycja</a>
-                                <a href="${contextPath}/sendEmailId=${team.id}"
-                                   class="btn btn-primary">Wyslij wiadomosc</a>
+                                <c:out value="${game.round}" />
                             </td>
-                            </tr>
-                        </c:forEach>
+                            <td id="home-${game.id}">
+                                <c:out value="${game.home.name}" />
+                            </td>
+                            <td id="away-${game.id}">
+                                <c:out value="${game.away.name}" />
+                            </td>
+                            <td id="fixture-${game.id}">
+                                <c:if test="${game.goals_home != '-1'}">
+                                    <c:out value="${game.goals_home}" />:<c:out value="${game.goals_away}" />
+                                </c:if>
+                                <c:if test="${game.goals_home eq '-1'}">
+                                    -:-
+                                </c:if>
+                            </td>
+                            <td>
+                                <a href="${contextPath}/teamId=${game.id}"
+                                   class="btn btn-primary">Podglad</a>
+                                <button
+                                        class="btn btn-primary menage" id="${game.id}">Zarzadzaj</button>
+                            </td>
+                        </tr>
+                    </c:forEach>
 
-                        </tbody>
-                        </table>
-                </div>
+                    </tbody>
+                </table>
             </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">Last games</div>
-                <div class="panel-body">
-                    <table class="table table-striped table-hover">
-                        <thead class="thead-inverse">
-                        <th>Data</th>
-                        <th>Round</th>
-                        <th>Dom</th>
-                        <th>Wyjazd</th>
-                        <th>Wynik</th>
-                        </thead>
-                        <tbody>
-                        <c:forEach items="${lastGameList}" var="game">
-                            <tr>
-                                <td>
-                                    <fmt:formatDate value="${game.date}" pattern="yyyy-MM-dd" />
-                                </td>
-                                <td>
-                                    <c:out value="${game.round}" />
-                                </td>
-                                <td id="home-${game.id}">
-                                    <c:out value="${game.home.name}" />
-                                </td>
-                                <td id="away-${game.id}">
-                                    <c:out value="${game.away.name}" />
-                                </td>
-                                <td id="fixture-${game.id}">
-                                    <c:if test="${game.goals_home != '-1'}">
-                                        <c:out value="${game.goals_home}" />:<c:out value="${game.goals_away}" />
-                                    </c:if>
-                                    <c:if test="${game.goals_home eq '-1'}">
-                                        -:-
-                                    </c:if>
-                                </td>
-                                <td>
-                                    <a href="${contextPath}/teamId=${game.id}"
-                                       class="btn btn-primary">Podglad</a>
-                                    <button
-                                            class="btn btn-primary menage" id="${game.id}">Zarzadzaj</button>
-                                </td>
-                            </tr>
-                        </c:forEach>
+        </div>
+        <div class="nadawca col-lg-6  col-md-6 col-sm-6">
+            <div>
+                <h2>Następne spotkania:</h2>
+            </div>
+            <div>
+                <table class="table table-hover">
+                    <thead>
+                    <th></th>
+                    <th>Data</th>
+                    <th>Round</th>
+                    <th>Dom</th>
+                    <th>Wyjazd</th>
+                    <th>Wynik</th>
+                    </thead>
+                    <tbody>
+                    <c:forEach items="${gameList}" var="game">
+                        <tr>
+                            <td>
+                                <fmt:formatDate value="${game.date}" pattern="yyyy-MM-dd" />
+                            </td>
+                            <td>
+                                <c:out value="${game.round}" />
+                            </td>
+                            <td id="home-${game.id}">
+                                <c:out value="${game.home.name}" />
+                            </td>
+                            <td id="away-${game.id}">
+                                <c:out value="${game.away.name}" />
+                            </td>
+                            <td id="fixture-${game.id}">
+                                <c:if test="${game.goals_home != '-1'}">
+                                    <c:out value="${game.goals_home}" />:<c:out value="${game.goals_away}" />
+                                </c:if>
+                                <c:if test="${game.goals_home eq '-1'}">
+                                    -:-
+                                </c:if>
+                            </td>
+                            <td>
+                                <a href="${contextPath}/teamId=${game.id}"
+                                   class="btn btn-primary">Podglad</a>
+                                <button
+                                        class="btn btn-primary menage" id="${game.id}">Zarzadzaj</button>
+                            </td>
+                        </tr>
+                    </c:forEach>
 
-                        </tbody>
-                    </table>
-                </div>
+                    </tbody>
+                </table>
             </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">Next games</div>
-                <div class="panel-body">
-                    <table class="table table-striped table-hover">
-                        <thead class="thead-inverse">
-                        <th>Data</th>
-                        <th>Round</th>
-                        <th>Dom</th>
-                        <th>Wyjazd</th>
-                        <th>Wynik</th>
-                        </thead>
-                        <tbody>
-                        <c:forEach items="${gameList}" var="game">
-                            <tr>
-                                <td>
-                                    <fmt:formatDate value="${game.date}" pattern="yyyy-MM-dd" />
-                                </td>
-                                <td>
-                                    <c:out value="${game.round}" />
-                                </td>
-                                <td id="home-${game.id}">
-                                   <c:out value="${game.home.name}" />
-                                </td>
-                                <td id="away-${game.id}">
-                                    <c:out value="${game.away.name}" />
-                                </td>
-                                <td id="fixture-${game.id}">
-                                    <c:if test="${game.goals_home != '-1'}">
-                                        <c:out value="${game.goals_home}" />:<c:out value="${game.goals_away}" />
-                                    </c:if>
-                                    <c:if test="${game.goals_home eq '-1'}">
-                                        -:-
-                                    </c:if>
-                                </td>
-                                <td>
-                                    <a href="${contextPath}/teamId=${game.id}"
-                                       class="btn btn-primary">Podglad</a>
-                                    <button
-                                       class="btn btn-primary menage" id="${game.id}">Zarzadzaj</button>
-                                </td>
-                            </tr>
-                        </c:forEach>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="nadawca col-lg-6  col-md-6 col-sm-6">
+            <div>
+                <h2>Tabela:</h2>
+            </div>
+            <div>
+                <table class="table table-hover">
+                    <thead>
+                    <th></th>
+                    <th>Nazwa</th>
+                    <th>Mecze</th>
+                    <th>Zwyciestwa</th>
+                    <th>Remisy</th>
+                    <th>Porazki</th>
+                    <th>Punkty</th>
+                    </thead>
+                    <tbody>
+                    <c:forEach items="${tournamentTable}" var="game" varStatus="status">
+                        <tr>
+                            <td align="center">${status.count}</td>
+                            <td>
+                                <c:out value="${game.name}" />
+                            </td>
+                            <td>
+                                <c:out value="${game.countMatch}" />
+                            </td>
+                            <td>
+                                <c:out value="${game.countWin}" />
+                            </td>
+                            <td>
+                                <c:out value="${game.countDraw}" />
+                            </td>
+                            <td>
+                                <c:out value="${game.countFail}" />
+                            </td>
+                            <td>
+                                <c:out value="${game.countPoints}" />
+                            </td>
+                        </tr>
+                    </c:forEach>
 
-                        </tbody>
-                    </table>
-                </div>
+                    </tbody>
+                </table>
             </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">Table</div>
-                <div class="panel-body">
-                    <table class="table table-striped table-hover">
-                        <thead class="thead-inverse">
-                        <th>Name</th>
-                        <th>Matches</th>
-                        <th>Win</th>
-                        <th>Draw</th>
-                        <th>Fail</th>
-                        <th>Points</th>
-                        </thead>
-                        <tbody>
-                        <c:forEach items="${tournamentTable}" var="game">
-                            <tr>
-                                <td>
-                                    <c:out value="${game.name}" />
-                                </td>
-                                <td>
-                                    <c:out value="${game.countMatch}" />
-                                </td>
-                                <td>
-                                    <c:out value="${game.countWin}" />
-                                </td>
-                                <td>
-                                    <c:out value="${game.countDraw}" />
-                                </td>
-                                <td>
-                                    <c:out value="${game.countFail}" />
-                                </td>
-                                <td>
-                                    <c:out value="${game.countPoints}" />
-                                </td>
-                            </tr>
-                        </c:forEach>
+        </div>
+    </div>
+</div>
 
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <a href="${contextPath}/addMatch"
-               class="btn btn-primary">Dodaj spotkanie</a>
         </div>
     <div id="dialog-form" title="Generate schedule">
 
@@ -452,9 +488,32 @@
                  </div>
 
              </form>
-         </div>
+    <table id="playerEvent">
+        <th>Nazwa</th>
+    </table>
+    <button id="addEvent" value="aassss">asdfghj</button>
+    <div id="eventDialog" >
 
-     </div>
+        <form>
+            <div>
+                <input id="player" path="name" class="form-control" type="text" name="name" />
+            </div>
 
+            <div>
+                <select class="form-control" id="selectCategory" path="categoryOfTournament" >
+                    <option value="Junior">Junior</option>
+                    <option value="Open">Open</option>
+                </select>
+            </div>
+
+
+        </form>
+
+
+    </div>
+</div>
+
+
+    <jsp:include page="footer.jsp"/>
      </body>
      </html>

@@ -17,36 +17,17 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link href="<c:url value="/resources/css/bootstrap.min.css"/>" rel="stylesheet" >
-    <link href="<c:url value="/resources/css/site.css" />" rel="stylesheet">
+    <link href="<c:url value="/resources/css/style.css" />" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
     <script src="http://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/src/js/bootstrap-datetimepicker.js"></script>
     <title>Welcome</title>
+    <script src="<c:url value="/resources/js/bootstrap.min.js"/>"></script>
 
 </head>
 <body>
-<header>
-    <div class="container">
-        <a href="${contextPath}/welcome" id="home_page"><h1>ManageCompetition</h1></a>
-        <nav>
-            asdasdas
-        </nav>
-        <div class="user-info">
-            <c:if test="${pageContext.request.userPrincipal.name != null}">
-                <form id="logoutForm" method="POST" action="${contextPath}/logout">
-                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                </form>
-
-                <h5> Welcome ${pageContext.request.userPrincipal.name} | <a onclick="document.forms['logoutForm'].submit()">Logout</a></h5>
-
-            </c:if>
-            <img src="http://icons.iconseeker.com/ico/application-interface/user-5.ico" alt="user" />
-
-            </form>
-        </div>
-    </div>
-</header>
+<jsp:include page="header.jsp"/>
 <div class="container">
 
     <div class="grid">
@@ -71,7 +52,16 @@
                 <form:errors path="team" style="color:red"></form:errors>
             </div>
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            <div class="form-group">
+                <label for="comment">Regulamin:</label>
+                <textarea class="form-control" rows="5" id="comment" readonly><c:out value="${rules}" /></textarea>
+            </div>
 
+            <div>
+                <div class="checkbox">
+                    <label><input type="checkbox" value="">Akceptuje regulamin turnieju</label>
+                </div>
+            </div>
             <div>
                 <button class="btn btn-primary" type="submit">Dodaj</button>
                 <a href="${contextPath}/welcome" class="btn btn-primary">Wroc</a>
@@ -85,5 +75,6 @@
         </div>
     </div>
 </div>
+<jsp:include page="footer.jsp"/>
 </body>
 </html>

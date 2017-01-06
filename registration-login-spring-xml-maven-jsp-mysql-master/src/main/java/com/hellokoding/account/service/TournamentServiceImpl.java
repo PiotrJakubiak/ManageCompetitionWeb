@@ -3,9 +3,11 @@ package com.hellokoding.account.service;
 import com.hellokoding.account.model.Game;
 import com.hellokoding.account.model.Team;
 import com.hellokoding.account.model.Tournament;
+import com.hellokoding.account.model.User;
 import com.hellokoding.account.repository.GameRepository;
 import com.hellokoding.account.repository.TeamRepository;
 import com.hellokoding.account.repository.TournamentRepository;
+import com.hellokoding.account.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +25,12 @@ import java.util.List;
 public class TournamentServiceImpl implements TournamentService {
 
     @Autowired
+    private UserRepository userRepository;
+    @Autowired
     private TournamentRepository tournamentRepository;
+
+    @Autowired
+    private SecurityService securityService;
 
     @Autowired
     private TeamRepository teamRepository;
@@ -85,9 +92,9 @@ public class TournamentServiceImpl implements TournamentService {
     }
 
     @Override
-    public void setFixture(List<Team> teamList,Tournament tournament,int frequency) {
+    public void setFixture(List<Team> teamList,Tournament tournament,int frequency,int numberOfRounds) {
 
-        int numberOfRound = teamList.size()-1;
+        int numberOfRound = (teamList.size()-1)*numberOfRounds;
         int half = teamList.size()/2;
         Team stala = teamList.get(0);
         teamList.remove(0);
@@ -105,8 +112,13 @@ public class TournamentServiceImpl implements TournamentService {
             game.setRound(day+1);
             int teamIdx = day % teamSize;
 
-            game.setHome(stala);
-            game.setAway(teamList.get(teamIdx));
+            if(day >= numberOfRound/2){
+                game.setHome(teamList.get(teamIdx));
+                game.setAway(stala);
+            }else {
+                game.setHome(stala);
+                game.setAway(teamList.get(teamIdx));
+            }
             game.setTournament(tournament);
             game.setGoals_home(-1);
             game.setGoals_away(-1);
@@ -117,8 +129,15 @@ public class TournamentServiceImpl implements TournamentService {
                 game.setRound(day+1);
                 int firstTeam = (day+idx) % teamSize;
                 int secondTeam = (day + teamSize -idx) % teamSize;
-                game.setHome(teamList.get(firstTeam));
-                game.setAway(teamList.get(secondTeam));
+                if(day > numberOfRound/2){
+                    game.setHome(teamList.get(secondTeam));
+                    game.setAway(teamList.get(firstTeam));
+                }
+                else {
+                    game.setHome(teamList.get(firstTeam));
+                    game.setAway(teamList.get(secondTeam));
+                }
+
                 game.setGoals_away(-1);
                 game.setGoals_home(-1);
                 game.setTournament(tournament);
@@ -133,4 +152,9 @@ public class TournamentServiceImpl implements TournamentService {
         cal.add(Calendar.DATE,days);
         return cal.getTime();
     }
+    public List<Tournament> findByUser(User user) {
+       return tournamentRepository.findByUser(userRepository.findByUsername(securityService.findLoggedInUsername()));
+    }
+
+
 }

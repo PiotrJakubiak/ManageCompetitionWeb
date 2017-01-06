@@ -48,7 +48,6 @@ public class SelectTeamValidator implements Validator {
         for(Team team : listTeam){
             if(team.getName().equals(tournamentTeam.getTeam())) {
                 errors.rejectValue("team", "Select.selectTeam.team");
-                break;
             }
         }
 

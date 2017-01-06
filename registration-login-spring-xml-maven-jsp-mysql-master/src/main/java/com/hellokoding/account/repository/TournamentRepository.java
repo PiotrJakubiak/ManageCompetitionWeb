@@ -18,8 +18,8 @@ import java.util.List;
 public interface TournamentRepository extends JpaRepository<Tournament,Long> {
     Tournament findByName(String name);
     long count();
-    // Zapytanie zwracajace druzyny w turnieju po nazwie
-    //List<Tournament> findByTeams_Name(String name);
+    List<Tournament> findByUser(User user);
+
     @Modifying
     @Transactional
     @Query("UPDATE Tournament t SET t.currentNumberOfTeam = :currentNumberOfTeam WHERE t.id = :id")

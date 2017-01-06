@@ -16,10 +16,11 @@ public interface TournamentService {
     List<Tournament> findAllTournaments();
     Tournament findByName(String name);
     Tournament getTournament(long tournamentId);
+    List<Tournament> findByUser(User user);
 
     void saveTeamToTournament(List<Team> team,Tournament tournament);
-  // List<Tournament> findByTeam(String name);
+
   void updateTournament(int currentNumberOfTeam,long id);
     void updateTournamentState(String stateOfTournament,long id);
-    void setFixture(List<Team> teamList,Tournament tournament,int frequency);
+    void setFixture(List<Team> teamList,Tournament tournament,int frequency,int numberOfRounds);
 }

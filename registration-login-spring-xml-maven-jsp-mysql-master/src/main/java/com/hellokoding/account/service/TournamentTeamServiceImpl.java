@@ -40,5 +40,8 @@ public class TournamentTeamServiceImpl implements TournamentTeamService {
         return tournamentTeamRepository.findByTournament(tournament);
     }
 
-
+    @Override
+    public List<TournamentTeam> findByTeam(Team team) {
+        return tournamentTeamRepository.findByTeam(team);
+    }
 }

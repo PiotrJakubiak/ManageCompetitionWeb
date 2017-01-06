@@ -1,0 +1,108 @@
+
+.navbar-fixed-bottom, .navbar-fixed-top {
+    position: relative;
+}
+body {
+    /*padding-top: 70px;*/
+    margin-bottom: 60px;
+    background-color:#383838;
+    color: #868686;
+    /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+}
+html {
+    position: relative;
+    min-height: 100%;
+}
+#wrap {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    /* Negative indent footer by it's height */
+    margin: 0 auto -60px;
+}
+
+/* Set the fixed height of the footer here */
+#push,
+#footer {
+    height: 50px;
+}
+#footer {
+    background-color: #222222;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    position: fixed;
+}
+
+/* Lastly, apply responsive CSS fixes as necessary */
+@media (max-width: 767px) {
+    #footer {
+        margin-left: -20px;
+        margin-right: -20px;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
+#wrap > .container {
+    padding-top: 60px;
+}
+.container .credit {
+    margin: 20px 0;
+}
+
+code {
+    font-size: 80%;
+}
+
+.user-info {
+    float:right;
+    position: relative;
+    display: block;
+    padding-top: 10px;
+}
+.user-info a, a:visited {
+    color: #eee;
+    text-decoration: none;
+}
+
+.user-info .btn-default:hover {
+    color: #eee;
+    background-color: #222;
+    border-color: #222;
+}
+.user-info .btn-default {
+    color: #868686;
+    background-color: #222;
+    border-color: #222;
+}
+.user-info .dropdown-menu {
+    background-color: #222;
+    min-width: 100px;
+}
+.user-info .btn-default:active, .open>.dropdown-toggle.btn-default {
+    color:#eee;
+    background-color: #222;
+    border-color: #222;
+}
+.user-info .btn-default.active.focus, .btn-default.active:focus, .btn-default.active:hover,
+.btn-default:active.focus, .btn-default:active:focus, .btn-default:active:hover, .open>.dropdown-toggle.btn-default.focus,
+.open>.dropdown-toggle.btn-default:focus, .open>.dropdown-toggle.btn-default:hover {
+    color: #868686;
+    background-color: #222;
+    border-color: #222;
+}
+.user-info .dropdown-menu>li>a {
+    color: #868686;
+    background-color: #222;
+}
+.user-info .dropdown-menu>li>a:hover {
+    color: #ffffff;
+    background-color: #222;
+}
+.table td,th {
+    text-align: center;
+}
+.user-info a, a:visited {
+    color: #fff;
+    text-decoration: none;
+}

@@ -24,6 +24,7 @@ public class Team {
     private Set<TournamentTeam> tournamentTeams;
 
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public Long getId() {

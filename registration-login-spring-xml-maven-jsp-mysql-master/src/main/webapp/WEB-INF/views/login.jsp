@@ -21,6 +21,7 @@
 </head>
 
 <body>
+
     <div class="center-log-in-page">
         <div id="log-in-form">
             <form method="POST" action="${contextPath}/login" class="form-signin">
@@ -40,8 +41,10 @@
                     <span class="error">${error}</span>
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 </div>
+                <div>
+                    <button class="btn btn-primary btn-block" type="submit">Log In</button>
+                </div>
 
-                <button class="btn btn-primary btn-block" type="submit">Log In</button>
                 <div id="register">
                     <labe>Not a member yet?</labe><a href="${contextPath}/registration">Register</a>
                 </div>

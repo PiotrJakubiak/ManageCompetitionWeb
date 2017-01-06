@@ -23,97 +23,114 @@
         .ui-dialog .ui-state-error { padding: .3em; }
         .validateTips { border: 1px solid transparent; padding: 0.3em; }
     </style>
-    <link href="<c:url value="/resources/css/site.css" />" rel="stylesheet">
+    <link href="<c:url value="/resources/css/style.css" />" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
     <script src="http://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/src/js/bootstrap-datetimepicker.js"></script>
 
 </head>
-<body>
-<header>
-    <div class="container">
-        <a href="${contextPath}/welcome" id="home_page"><h1>ManageCompetition</h1></a>
-        <nav>
-            asdasdas
-        </nav>
-        <div class="user-info">
-            <c:if test="${pageContext.request.userPrincipal.name != null}">
-                <form id="logoutForm" method="POST" action="${contextPath}/logout">
-                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                </form>
 
-                <h5> Welcome ${pageContext.request.userPrincipal.name} | <a onclick="document.forms['logoutForm'].submit()">Logout</a></h5>
-
-            </c:if>
-            <img src="http://icons.iconseeker.com/ico/application-interface/user-5.ico" alt="user" />
-
-            </form>
-        </div>
-    </div>
-</header>
+<jsp:include page="header.jsp"/>
 
 <div class="container">
-    <div class="grid">
-        <a href="${contextPath}/createNewTournament" class="btn btn-primary">Stworz turniej</a>
-        <a href="${contextPath}/createNewTeam" class="btn btn-primary">Dodaj druzyne</a>
+    <div class="row">
+        <div class="nadawca col-lg-6  col-md-6 col-sm-6">
+            <div>
+                <a href="${contextPath}/createNewTournament" class="btn btn-primary">Stworz turniej</a>
+                <a href="${contextPath}/createNewTeam" class="btn btn-primary">Dodaj druzyne</a>
+            </div>
+            <div>
+                <h2>Tworzenie nowej druzyny</h2>
+            </div>
+            <div>
+                <form:form method="POST" action="${contextPath}/createNewTeam" modelAttribute="teamForm" >
+
+                <div class="form-group ${status.error ? 'has-error' : ''}">
+                    <label>Nazwa drużyny:</label>
+                    <form:input name="name" class="form-control" path="name" type="text" autofocus="true"/>
+                    <form:errors path="name" style="color:red"></form:errors>
+                </div>
+                <div class="form-group ${status.error ? 'has-error' : ''}">
+                    <label>Email kontaktowy:</label>
+                    <form:input name="emailContact" class="form-control" path="emailContact" type="text" autofocus="true"/>
+                    <form:errors path="emailContact" style="color:red"></form:errors>
+                </div>
+                <div class="form-group ${status.error ? 'has-error' : ''}">
+                    <label>Kategoria wiekowa:</label>
+                    <form:select class="form-control" id="selectCategory" path="category" >
+                        <form:option value="Junior">Junior</form:option>
+                        <form:option value="Open">Open</form:option>
+                    </form:select>
+                </div>
+            </div>
+        </div>
+        <div class="nadawca col-lg-6  col-md-6 col-sm-6">
+
+        </div>
     </div>
-    <div class="content">
-        <form:form method="POST" action="${contextPath}/createNewTeam" modelAttribute="teamForm" >
-            <h2>Tworzenie nowej druzyny</h2>
-            <table class="table table-striped">
-                <tr>
-                    <td class="td"><b>Nazwa zepołu:</b></td>
-                    <td class="td">
-                        <div class="form-group ${status.error ? 'has-error' : ''}">
-                            <form:input name="name" class="form-control" path="name" type="text" autofocus="true"/>
-                        </div>
-                        <form:errors path="name" style="color:red"></form:errors>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="td"><b>Email kontaktowy:</b></td>
-                    <td class="td">
-                        <div class="form-group ${status.error ? 'has-error' : ''}">
-                            <form:input name="emailContact" class="form-control" path="emailContact" type="text" autofocus="true"/>
+</div>
+        <div class="container">
 
-                        </div>
-                        <form:errors path="emailContact" style="color:red"></form:errors>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="td"><b>Kategoria wiekowa:</b></td>
-                    <td class="td">
-                        <div class="form-group ${status.error ? 'has-error' : ''}">
-                            <form:select class="form-control" id="selectCategory" path="category" >
-                                <form:option value="Junior">Junior</form:option>
-                                <form:option value="Open">Open</form:option>
-                            </form:select>
-                        </div>
-                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                        <br />
-                    </td>
-                </tr>
-            </table>
-                </td>
-                </tr>
-                <tr align="left">
-                    <td>
-                        <table class="table table-striped">
-                            <tr align="center">
-                                <td class="td">
-                                    <button class="btn btn-primary" type="submit" >Zapisz</button>
+            <div class="row">
 
-                                    <a href="${pageContext.request.contextPath}/welcome" class="btn btn-primary"> Wroc </a>
+
+                <div>
+                    <div>
+                        <h3>Zawodnicy:</h3>
+                    </div>
+                    <table class="table">
+                        <thead>
+                        <th>Lp.</th>
+                        <th>Imie</th>
+                        <th>Nazwisko</th>
+                        <th>Pozycja</th>
+                        <th>Numer</th>
+
+
+                        </thead>
+                        <tbody>
+                        <c:forEach items="${teamForm.players}" var="player" varStatus="status">
+                            <tr>
+                                <td align="center">${status.count}</td>
+                                <td>
+                                    <form:input name="players[${status.index}].name" path="players[${status.index}].name" class="form-control"/>
                                 </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
+                                <td>
+                                    <form:input name="players[${status.index}].lastName" path="players[${status.index}].lastName" class="form-control"/>
+                                </td>
+                                <td>
+                                    <form:select class="form-control" path="players[${status.index}].position" >
+                                        <form:option value="Bramkarz">Bramkarz</form:option>
+                                        <form:option value="Obronca">Obronca</form:option>
+                                        <form:option value="Pomocnik">Pomocnik</form:option>
+                                        <form:option value="Napastnik">Napastnik</form:option>
+                                    </form:select>
+                                </td>
+                                <td align="center">
+                                    <form:input name="players[${status.index}].number" path="players[${status.index}].number" class="form-control" readonly="true"/>
+                                </td>
 
-            </form:form>
+                            </tr>
+                        </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                <div>
+                    <button class="btn btn-primary" type="submit" >Zapisz</button>
+
+                    <a href="${pageContext.request.contextPath}/welcome" class="btn btn-primary"> Wroc </a>
+
+                </div>
+            </div>
+        </div>
+
+        </form:form>
 
     </div>
 </div>
+
+<jsp:include page="footer.jsp"/>
 </body>
 </html>

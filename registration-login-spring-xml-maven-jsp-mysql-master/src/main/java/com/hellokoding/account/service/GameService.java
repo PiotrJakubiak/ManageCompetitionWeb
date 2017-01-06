@@ -14,7 +14,9 @@ public interface GameService {
     void save(Game game);
     List<Game> findAllByTournament(Tournament tournament);
     Game findById(long id);
-    List<Game> findNextGame(Tournament tournament, Date date);
-    List<Game> findLastGames(Tournament tournament, Date date);
+    List<Game> findNextGame(Tournament tournament);
+    List<Game> findLastGames(Tournament tournament);
     List<Game> findAllByTeam(Tournament tournament,Team team);
+    List<Game> findAllByTeam(Team team);
+
 }

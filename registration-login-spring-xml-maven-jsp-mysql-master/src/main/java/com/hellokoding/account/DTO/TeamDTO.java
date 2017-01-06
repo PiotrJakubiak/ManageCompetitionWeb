@@ -1,5 +1,9 @@
 package com.hellokoding.account.DTO;
 
+import com.hellokoding.account.model.Player;
+
+import java.util.List;
+
 /**
  * Created by Piotrek on 29-Nov-16.
  */
@@ -10,6 +14,7 @@ public class TeamDTO {
     private String shortName;
     private String category;
     private String emailContact;
+    private List<Player> players;
 
     public String getName() {
         return name;
@@ -49,5 +54,13 @@ public class TeamDTO {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    public void setPlayers(List<Player> players) {
+        this.players = players;
     }
 }

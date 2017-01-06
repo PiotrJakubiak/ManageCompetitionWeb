@@ -2,6 +2,7 @@ package com.hellokoding.account.model;
 
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,6 +14,9 @@ public class User {
     private String password;
     private String passwordConfirm;
     private String email;
+    private Date birthDay;
+    private String name;
+    private String lastName;
     private Set<Role> roles;
     private Set<Team> teams;
 
@@ -79,4 +83,27 @@ public class User {
         this.teams = teams;
     }
 
+    public Date getBirthDay() {
+        return birthDay;
+    }
+
+    public void setBirthDay(Date birthDay) {
+        this.birthDay = birthDay;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 }

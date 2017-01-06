@@ -13,5 +13,6 @@ import java.util.List;
  */
 public interface TournamentTeamRepository extends JpaRepository<TournamentTeam,Long> {
     List<TournamentTeam> findByTournament(Tournament tournament);
+    List<TournamentTeam> findByTeam(Team team);
 
 }

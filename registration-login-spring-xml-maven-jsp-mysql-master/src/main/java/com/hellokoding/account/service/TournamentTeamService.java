@@ -15,5 +15,6 @@ public interface TournamentTeamService {
     @Transactional
     void save( Team team, Tournament tournament);
     List<TournamentTeam> findByTournament(Tournament tournament);
+    List<TournamentTeam> findByTeam(Team team);
 
 }

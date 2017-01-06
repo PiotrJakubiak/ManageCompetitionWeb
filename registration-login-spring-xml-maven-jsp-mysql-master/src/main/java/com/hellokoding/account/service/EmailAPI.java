@@ -1,6 +1,7 @@
 package com.hellokoding.account.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
@@ -18,13 +19,18 @@ public class EmailAPI {
 
     public void crunchifyReadyToSendEmail(String toAddress, String fromAddress, String subject, String msgBody) {
 
-        System.out.println("wysylam");
         SimpleMailMessage crunchifyMsg = new SimpleMailMessage();
         crunchifyMsg.setFrom(fromAddress);
         crunchifyMsg.setTo(toAddress);
         crunchifyMsg.setSubject(subject);
         crunchifyMsg.setText(msgBody);
-        crunchifymail.send(crunchifyMsg);
+        try {
+            crunchifymail.send(crunchifyMsg);
+        } catch(MailException ex) {
+
+            System.out.println("blad");
+        }
+
     }
 }
 

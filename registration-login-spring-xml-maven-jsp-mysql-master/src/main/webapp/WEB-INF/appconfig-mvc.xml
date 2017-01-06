@@ -4,9 +4,13 @@
        xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/beans
  http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
+
     <mvc:annotation-driven/>
 
     <mvc:resources mapping="/resources/**" location="/resources/"/>
+
 
     <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
         <property name="basenames">

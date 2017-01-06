@@ -6,7 +6,7 @@
 <html>
 <head>
     <link href="<c:url value="/resources/css/bootstrap.min.css"/>" rel="stylesheet" >
-    <link href="<c:url value="/resources/css/site.css" />" rel="stylesheet">
+    <link href="<c:url value="/resources/css/style.css" />" rel="stylesheet">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>jQuery UI Dialog - Modal form</title>
@@ -102,22 +102,7 @@
     </script>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <a href="${contextPath}/login" id="home_page"><h1>ManageCompetition</h1></a>
-            <nav>
-                asdasdas
-            </nav>
-            <div class="user-info">
-
-                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                    <img id="img" src="http://icons.iconseeker.com/ico/application-interface/user-5.ico" alt="user" />
-
-                </form>
-            </div>
-        </div>
-    </header>
-<div class="container">
+<jsp:include page="header.jsp"/>
 
     <div class="content">
 
@@ -211,7 +196,6 @@
 
     </form>
 </div>
-</div>
-
+<jsp:include page="footer.jsp"/>
 </body>
 </html>

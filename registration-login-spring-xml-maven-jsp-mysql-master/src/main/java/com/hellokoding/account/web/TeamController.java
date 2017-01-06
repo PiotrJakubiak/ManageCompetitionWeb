@@ -17,9 +17,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Piotrek on 29-Nov-16.
@@ -42,45 +45,64 @@ public class TeamController {
     @Autowired
     private UserService userService;
 
+    private static List<Player> players = new ArrayList<Player>();
+
+    static {
+        players.add(new Player("", "", "Bramkarz" ,1 ,""));
+        players.add(new Player("", "", "Obronca" ,2 ,""));
+        players.add(new Player("", "", "Obronca" ,3 ,""));
+        players.add(new Player("", "", "Obronca" ,4 ,""));
+        players.add(new Player("", "", "Obronca" ,5 ,""));
+        players.add(new Player("", "", "Pomocnik" ,6 ,""));
+        players.add(new Player("", "", "Pomocnik" ,7 ,""));
+        players.add(new Player("", "", "Pomocnik" ,8 ,""));
+        players.add(new Player("", "", "Pomocnik" ,9 ,""));
+        players.add(new Player("", "", "Napastnik" ,10 ,""));
+        players.add(new Player("", "", "Napastnik" ,11 ,""));
+    }
+
     @RequestMapping(value = "/createNewTeam", method = RequestMethod.GET)
-    public String createNewTeam(Model model) {
-        Team team = new Team();
+    public ModelAndView createNewTeam(Model model) {
 
-        model.addAttribute("teamForm", team);
+        TeamDTO team = new TeamDTO();
+        team.setPlayers(players);
 
-
-        return "createNewTeam";
+        return new ModelAndView ("createNewTeam","teamForm", team);
     }
     @RequestMapping(value = "/createNewTeam", method = RequestMethod.POST)
-    public String createNewTeam(@ModelAttribute("teamForm") Team teamForm, BindingResult bindingResult, Model model, RedirectAttributes redir) {
+    public String createNewTeam(@ModelAttribute("teamForm") TeamDTO teamForm, BindingResult bindingResult, Model model, RedirectAttributes redir) {
 
-        teamValidator.validate(teamForm,bindingResult);
+        //teamValidator.validate(teamForm,bindingResult);
 
         if (bindingResult.hasErrors()) {
             return "createNewTeam";
         }
 
+        List<Player> players = teamForm.getPlayers();
+        Team team = new Team();
+        team.setName(teamForm.getName());
+        team.setEmailContact(teamForm.getEmailContact());
+        team.setCategory(teamForm.getCategory());
+        team.setUser(userService.findByUsername(securityService.findLoggedInUsername()));
 
-        teamForm.setUser(userService.findByUsername(securityService.findLoggedInUsername()));
-        teamService.save(teamForm);
+        teamService.save(team);
 
-        ModelMap modelMap = new ModelMap();
-        modelMap.addAttribute(teamForm);
-        redir.addFlashAttribute("team",teamForm);
+        if(null != players && players.size() > 0) {
+            //TeamController.players = players;
+            for (Player p:players) {
+                Player player = new Player();
+                player.setName(p.getName());
+                player.setLastName(p.getLastName());
+                player.setPosition(p.getPosition());
+                player.setNumber(p.getNumber());
+                player.setTeam(team);
+                playerService.save(player,team);
+            }
+        }
 
-        return "redirect:manageTeam";
+        return "redirect:welcome";
 
     }
-    @RequestMapping(value="/manageTeam", method = RequestMethod.GET)
-    public String manageTeam(@ModelAttribute("team") Team teamForm, HttpServletRequest request, Model model) {
-
-        request.getSession().setAttribute("team",teamService.findById(teamForm.getId()));
-
-        model.addAttribute("team",teamForm);
-
-        return "manageTeam";
-    }
-
 
     @RequestMapping(value = "/editTeamId={id}", method = RequestMethod.GET)
     public String editTeam(@PathVariable("id") long id, RedirectAttributes redir) {

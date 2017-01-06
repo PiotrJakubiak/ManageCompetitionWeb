@@ -42,19 +42,24 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public List<Game> findNextGame(Tournament tournament, Date date) {
+    public List<Game> findNextGame(Tournament tournament) {
 
-        return gameRepository.findNextGame(tournament, date, new PageRequest(0, tournament.getMaxNumberOfTeam()/2) {
+        return gameRepository.findNextGame(tournament, new PageRequest(0, tournament.getMaxNumberOfTeam()/2) {
         });
     }
 
     @Override
-    public List<Game> findLastGames(Tournament tournament, Date date) {
-        return gameRepository.findLastGames(tournament,date,new PageRequest(0,tournament.getMaxNumberOfTeam()/2));
+    public List<Game> findLastGames(Tournament tournament) {
+        return gameRepository.findLastGames(tournament,new PageRequest(0,tournament.getMaxNumberOfTeam()/2));
     }
 
     @Override
     public List<Game> findAllByTeam(Tournament tournament,Team team) {
         return gameRepository.findAllByTeam(tournament,team);
+    }
+
+    @Override
+    public List<Game> findAllByTeam(Team team) {
+        return gameRepository.findAllByTeam(team);
     }
 }

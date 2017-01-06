@@ -31,7 +31,6 @@
         <div class="grid">
             <a href="${contextPath}/createNewTournament" class="btn btn-primary">Stworz turniej</a>
             <a href="${contextPath}/createNewTeam" class="btn btn-primary">Dodaj druzyne</a>
-            <a href="${contextPath}/welcome" class="btn btn-primary">Wroc</a>
         </div>
         <div>
 

@@ -39,18 +39,17 @@ public class EmployeeController {
     public void add(@RequestParam  String teamList,@RequestParam String numberOfrounds,@RequestParam String frequency,HttpServletResponse response) {
 
         System.out.println(numberOfrounds);
-        System.out.println(frequency);
 
         Tournament tournament =  tournamentService.findByName(teamList);
 
-        if(tournament.getCurrentNumberOfTeam() == tournament.getMaxNumberOfTeam()) {
+        if(tournament.getCurrentNumberOfTeam() == tournament.getMaxNumberOfTeam() && gameService.findAllByTournament(tournament).size()== 0) {
             List<TournamentTeam> list2 = tournamentTeamService.findByTournament(tournament);
             List<Team> listTeam = new ArrayList<>();
 
             for(TournamentTeam tournamentTeam : list2){
                 listTeam.add(tournamentTeam.getTeam());
             }
-            tournamentService.setFixture(listTeam,tournament,Integer.valueOf(frequency));
+            tournamentService.setFixture(listTeam,tournament,Integer.valueOf(frequency),Integer.valueOf(numberOfrounds));
         }
 
     }
@@ -61,6 +60,7 @@ public class EmployeeController {
 
         Tournament tournament =  tournamentService.getTournament(id);
         Iterable<Game> gameList = gameService.findAllByTournament(tournament);
+        modelMap.addAttribute("tournament",tournament);
         modelMap.addAttribute("gameList",gameList);
 
         return new ModelAndView("schedule", modelMap);

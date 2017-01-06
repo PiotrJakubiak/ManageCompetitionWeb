@@ -52,7 +52,8 @@ public class EmailController {
         System.out.println(emailDTO.getSubject());
         System.out.println(emailDTO.getText());
 
-        emailAPI.crunchifyReadyToSendEmail(teamService.findById(emailDTO.getId()).getEmailContact(),userService.findByUsername(securityService.findLoggedInUsername()).getEmail(),emailDTO.getSubject(),emailDTO.getText());
+        emailAPI.crunchifyReadyToSendEmail(teamService.findById(emailDTO.getId()).getEmailContact(),
+                                             userService.findByUsername(securityService.findLoggedInUsername()).getEmail(),emailDTO.getSubject(),emailDTO.getText());
         return "viewChoosenTournament";
     }
 

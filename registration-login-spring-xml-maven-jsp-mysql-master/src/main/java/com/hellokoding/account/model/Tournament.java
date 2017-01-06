@@ -28,8 +28,10 @@ public class Tournament {
 
     private String stateOfTournament;
     private String typeTournament;
+    private String description;
 
     private User user;
+    private Rules rules;
     private Set<TournamentTeam> tournamentTeams;
     private Set<Game> matches;
 
@@ -126,5 +128,23 @@ public class Tournament {
     public void setUser(User user)
     {
         this.user = user;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "rules_id")
+    public Rules getRules() {
+        return rules;
+    }
+
+    public void setRules(Rules rules) {
+        this.rules = rules;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

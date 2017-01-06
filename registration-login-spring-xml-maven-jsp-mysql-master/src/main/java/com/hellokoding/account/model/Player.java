@@ -30,6 +30,17 @@ public class Player {
         this.id = id;
     }
 
+    public Player(String name, String lastName, String position, int number, String birthDay) {
+        this.name = name;
+        this.lastName = lastName;
+        this.position = position;
+        this.number = number;
+        this.birthDay = birthDay;
+    }
+
+    public Player() {
+    }
+
     public int getNumber() {
         return number;
     }
